@@ -1,0 +1,27 @@
+{
+	"host": "",
+	"port": 8091,
+	"dbs": { 
+		"mongo": {
+			"type": "mongodb",
+			"host": "0.0.0.0",
+			"port": 27017,
+			"name": "user",
+			"user": "boss",
+			"password": "boss"
+		}
+	},
+	"handlers": { 
+		"roots": {
+			"type": "tcp",
+			"is_tsl": false
+		},
+		"grpc": {
+			"type": "grpc",
+			"host": "0.0.0.0",
+			"port": 9091,
+			"key": "02",
+			"is_tsl": false
+		}
+	}
+}

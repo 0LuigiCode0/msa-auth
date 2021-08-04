@@ -1,0 +1,3 @@
+[submodule "modules/x-msa-core"]
+	path = modules/x-msa-core
+	url = git@gitlab.local:x-msa/x-msa-utill.git
