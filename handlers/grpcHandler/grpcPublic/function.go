@@ -1,4 +1,4 @@
-package grpcpublic
+package grpcPublic
 
 import (
 	"bytes"
