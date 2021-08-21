@@ -6,17 +6,17 @@ import (
 	"os"
 	"os/signal"
 
-	"x-msa-auth/core/database"
-	"x-msa-auth/helper"
-	"x-msa-auth/hub"
-	corehelper "x-msa-core/helper"
+	coreHelper "github.com/0LuigiCode0/msa-core/helper"
+
+	"github.com/0LuigiCode0/msa-auth/core/database"
+	"github.com/0LuigiCode0/msa-auth/helper"
+	"github.com/0LuigiCode0/msa-auth/hub"
 
 	"github.com/0LuigiCode0/logger"
 )
 
 type Server interface {
 	Start()
-	Close()
 }
 
 type server struct {
@@ -30,11 +30,13 @@ func InitServer(conf *helper.Config) (S Server, err error) {
 	S = s
 	s.db, err = database.InitDB(conf)
 	if err != nil {
-		s.srv.Close()
-		return nil, fmt.Errorf("db not initialized: %v", err)
+		s.сlose()
+		err = fmt.Errorf("db not initialized: %v", err)
+		return
 	}
 	s.hub, err = hub.InitHub(s.db, conf)
 	if err != nil {
+		s.сlose()
 		err = fmt.Errorf("hub not initialized: %v", err)
 		return
 	}
@@ -45,35 +47,36 @@ func InitServer(conf *helper.Config) (S Server, err error) {
 }
 
 func (s *server) Start() {
-	signal.Notify(corehelper.C, os.Interrupt)
+	signal.Notify(coreHelper.C, os.Interrupt)
 
-	corehelper.Wg.Add(1)
+	coreHelper.Wg.Add(1)
 	go s.loop()
 
-	corehelper.Wg.Add(1)
+	coreHelper.Wg.Add(1)
 	go func() {
-		defer corehelper.Wg.Done()
+		defer coreHelper.Wg.Done()
 		if err := s.srv.ListenAndServe(); err != nil {
 			if err == http.ErrServerClosed {
 				logger.Log.Service("server stoped")
-				corehelper.C <- os.Interrupt
+				coreHelper.C <- os.Interrupt
 				return
 			}
 			logger.Log.Errorf("server error: %v", err)
-			corehelper.C <- os.Interrupt
+			coreHelper.C <- os.Interrupt
 			return
 		}
 	}()
 
 	logger.Log.Service("server started at address:", s.srv.Addr)
-	<-corehelper.C
+	<-coreHelper.C
+	s.сlose()
 }
 
 func (s *server) loop() {
-	defer corehelper.Wg.Done()
+	defer coreHelper.Wg.Done()
 	for {
 		select {
-		case <-corehelper.Ctx.Done():
+		case <-coreHelper.Ctx.Done():
 			return
 		default:
 			if err := recover(); err != nil {
@@ -83,13 +86,14 @@ func (s *server) loop() {
 	}
 }
 
-func (s *server) Close() {
-	s.srv.Shutdown(corehelper.Ctx)
+func (s *server) сlose() {
+	s.srv.Shutdown(coreHelper.Ctx)
 	if s.hub != nil {
 		s.hub.Close()
 	}
 	if s.db != nil {
 		s.db.Close()
 	}
-	corehelper.CloseCtx()
+	coreHelper.CloseCtx()
+	coreHelper.Wg.Wait()
 }

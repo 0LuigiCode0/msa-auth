@@ -6,11 +6,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
-	"x-msa-auth/helper"
-	"x-msa-auth/store/mongo/model"
-	"x-msa-core/grpc/msa_service"
 
-	corehelper "x-msa-core/helper"
+	"github.com/0LuigiCode0/msa-core/grpc/msa_service"
+
+	"github.com/0LuigiCode0/msa-auth/helper"
+	"github.com/0LuigiCode0/msa-auth/store/mongo/model"
+
+	coreHelper "github.com/0LuigiCode0/msa-core/helper"
 
 	goutill "github.com/0LuigiCode0/go-utill"
 	"github.com/0LuigiCode0/logger"
@@ -25,8 +27,8 @@ func (h *handler) call(ctx context.Context, req *msa_service.RequestCall) (*msa_
 	case helper.AuthGuard:
 		out, err = h.authGuard(req)
 	default:
-		logger.Log.Warningf("%v func -> %v", corehelper.KeyErrorNotFound, req.FuncName)
-		return nil, fmt.Errorf("%v func -> %q", corehelper.KeyErrorNotFound, req.FuncName)
+		logger.Log.Warningf("%v func -> %v", coreHelper.KeyErrorNotFound, req.FuncName)
+		return nil, fmt.Errorf("%v func -> %q", coreHelper.KeyErrorNotFound, req.FuncName)
 	}
 	if err != nil {
 		return nil, err
@@ -34,7 +36,7 @@ func (h *handler) call(ctx context.Context, req *msa_service.RequestCall) (*msa_
 
 	data, err := json.Marshal(out)
 	if err != nil {
-		logger.Log.Warningf("%v json: %v", corehelper.KeyErrorParse, err)
+		logger.Log.Warningf("%v json: %v", coreHelper.KeyErrorParse, err)
 		return nil, err
 	}
 	return &msa_service.ResponseCall{Result: data}, nil
@@ -43,13 +45,13 @@ func (h *handler) call(ctx context.Context, req *msa_service.RequestCall) (*msa_
 func (h *handler) authGuard(req *msa_service.RequestCall) (*model.UserModel, error) {
 	in := &model.RequsetAuthGRPC{}
 	if err := goutill.JsonParse(bytes.NewReader(req.Data), in); err != nil {
-		logger.Log.Warningf("%v json: %v", corehelper.KeyErrorParse, err)
-		return nil, fmt.Errorf("%v json: %v", corehelper.KeyErrorParse, err)
+		logger.Log.Warningf("%v json: %v", coreHelper.KeyErrorParse, err)
+		return nil, fmt.Errorf("%v json: %v", coreHelper.KeyErrorParse, err)
 	}
 
 	if !strings.HasPrefix(in.Jwt, "Bearer ") {
-		logger.Log.Warningf("%v jwt", corehelper.KeyErrorInvalidParams)
-		return nil, fmt.Errorf("%v jwt", corehelper.KeyErrorInvalidParams)
+		logger.Log.Warningf("%v jwt", coreHelper.KeyErrorInvalidParams)
+		return nil, fmt.Errorf("%v jwt", coreHelper.KeyErrorInvalidParams)
 	}
 	token, err := jwt.ParseWithClaims(strings.TrimPrefix(in.Jwt, "Bearer "), &model.UserClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if token.Method == jwt.SigningMethodHS256 {
@@ -62,13 +64,13 @@ func (h *handler) authGuard(req *msa_service.RequestCall) (*model.UserModel, err
 		return nil, fmt.Errorf("unexpected signing method : %v", token.Header["alg"])
 	})
 	if err != nil {
-		logger.Log.Warning("%v jwt: %v", corehelper.KeyErrorParse, err)
+		logger.Log.Warning("%v jwt: %v", coreHelper.KeyErrorParse, err)
 		return nil, err
 	}
 	if claims, ok := token.Claims.(*model.UserClaims); ok && token.Valid {
 		user, err := h.MongoStore().UserStore().SelectByID(claims.ID)
 		if err != nil {
-			logger.Log.Errorf("%v user: %v", corehelper.KeyErrorNotFound, err)
+			logger.Log.Errorf("%v user: %v", coreHelper.KeyErrorNotFound, err)
 			return nil, err
 		}
 		if in.Roles != nil {
@@ -83,6 +85,6 @@ func (h *handler) authGuard(req *msa_service.RequestCall) (*model.UserModel, err
 		return user, nil
 	}
 
-	logger.Log.Warningf("%v claims", corehelper.KeyErrorInvalidParams)
-	return nil, fmt.Errorf("%v claims", corehelper.KeyErrorInvalidParams)
+	logger.Log.Warningf("%v claims", coreHelper.KeyErrorInvalidParams)
+	return nil, fmt.Errorf("%v claims", coreHelper.KeyErrorInvalidParams)
 }

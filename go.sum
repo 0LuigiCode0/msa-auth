@@ -4,6 +4,8 @@ github.com/0LuigiCode0/go-utill v1.0.9 h1:MG1SEouOd6ISu3KDz1gdNeb2qe4UbscORlRp+4
 github.com/0LuigiCode0/go-utill v1.0.9/go.mod h1:i4XBatW4Hfoc5ZFOikxMvqG7UywhHDBsT5dRn6fBhac=
 github.com/0LuigiCode0/logger v1.1.2 h1:7XLfVMywp4d5eVrGtjTTMpQ4rn/+0nh80hdlBpnMvvY=
 github.com/0LuigiCode0/logger v1.1.2/go.mod h1:D62k9fJo9UMzZ1FBTVpDSm01u5tIhKNfxIgSBykBdTg=
+github.com/0LuigiCode0/msa-core v0.0.2 h1:eJVcbhKKVUtvVk/HMLmEPA5mr0FwZvA3rQ9NaVINWO4=
+github.com/0LuigiCode0/msa-core v0.0.2/go.mod h1:3O0j/qpZ2hC1vM7vRdCnzcKdlRO82fNc5v7L2l/CJ/k=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=

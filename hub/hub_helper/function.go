@@ -3,8 +3,9 @@ package hub_helper
 import (
 	"fmt"
 	"time"
-	"x-msa-auth/helper"
-	"x-msa-auth/store/mongo/model"
+
+	"github.com/0LuigiCode0/msa-auth/helper"
+	"github.com/0LuigiCode0/msa-auth/store/mongo/model"
 
 	"github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson/primitive"

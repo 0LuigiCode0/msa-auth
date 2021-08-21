@@ -2,13 +2,14 @@ package roots_handler
 
 import (
 	"net/http"
-	corehelper "x-msa-core/helper"
+
+	coreHelper "github.com/0LuigiCode0/msa-core/helper"
 
 	"github.com/0LuigiCode0/logger"
 	"github.com/gorilla/mux"
 )
 
-func (h *handler) Auth(w http.ResponseWriter, r *http.Request) {
+func (h *handler) auth(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	login := vars["login"]
@@ -16,21 +17,21 @@ func (h *handler) Auth(w http.ResponseWriter, r *http.Request) {
 
 	user, err := h.MongoStore().UserStore().SelectByLogin(login)
 	if err != nil {
-		logger.Log.Warningf("%v user: %v", corehelper.KeyErrorSave, err)
-		h.respError(w, corehelper.ErrorSave, corehelper.KeyErrorSave)
+		logger.Log.Warningf("%v user: %v", coreHelper.KeyErrorSave, err)
+		h.respError(w, coreHelper.ErrorSave, coreHelper.KeyErrorSave)
 		return
 	}
 
 	if user.Password != pwd {
-		logger.Log.Warningf("%v password wrong", corehelper.KeyErorrAccessDenied)
-		h.respError(w, corehelper.ErorrAccessDeniedParams, corehelper.KeyErorrAccessDenied)
+		logger.Log.Warningf("%v password wrong", coreHelper.KeyErorrAccessDenied)
+		h.respError(w, coreHelper.ErorrAccessDeniedParams, coreHelper.KeyErorrAccessDenied)
 		return
 	}
 
 	resp, err := h.Helper().GenerateJwt(user.ID)
 	if err != nil {
-		logger.Log.Warningf("%v jwt %v", corehelper.KeyErrorGenerate, err)
-		h.respError(w, corehelper.ErrorGenerate, corehelper.KeyErrorGenerate)
+		logger.Log.Warningf("%v jwt %v", coreHelper.KeyErrorGenerate, err)
+		h.respError(w, coreHelper.ErrorGenerate, coreHelper.KeyErrorGenerate)
 		return
 	}
 

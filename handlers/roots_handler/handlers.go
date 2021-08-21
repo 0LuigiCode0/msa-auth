@@ -3,10 +3,12 @@ package roots_handler
 import (
 	"encoding/json"
 	"net/http"
-	"x-msa-auth/handlers/roots_handler/roots_helper"
-	"x-msa-auth/helper"
-	"x-msa-auth/hub/hub_helper"
-	corehelper "x-msa-core/helper"
+
+	coreHelper "github.com/0LuigiCode0/msa-core/helper"
+
+	"github.com/0LuigiCode0/msa-auth/handlers/roots_handler/roots_helper"
+	"github.com/0LuigiCode0/msa-auth/helper"
+	"github.com/0LuigiCode0/msa-auth/hub/hub_helper"
 
 	"github.com/0LuigiCode0/logger"
 )
@@ -20,7 +22,7 @@ func InitHandler(hub hub_helper.HelperForHandler, conf *helper.HandlerConfig) (H
 	H = h
 
 	hUser := h.Router().PathPrefix("/core").Subrouter()
-	hUser.HandleFunc("/auth", h.Auth).Queries("login", "{login}", "pwd", "{pwd}")
+	hUser.HandleFunc("/auth", h.auth).Queries("login", "{login}", "pwd", "{pwd}")
 
 	h.SetHandler(applyCORS(h.Router()))
 	return
@@ -28,29 +30,29 @@ func InitHandler(hub hub_helper.HelperForHandler, conf *helper.HandlerConfig) (H
 
 func (h *handler) respOk(w http.ResponseWriter, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
-	resp := &corehelper.ResponseModel{
+	resp := &coreHelper.ResponseModel{
 		Success: true,
 		Result:  data,
 	}
 	buf, err := json.Marshal(resp)
 	if err != nil {
-		logger.Log.Warningf(corehelper.KeyErrorParse+": josn: %v", err)
-		h.respError(w, corehelper.ErrorParse, corehelper.KeyErrorParse+": josn")
+		logger.Log.Warningf(coreHelper.KeyErrorParse+": josn: %v", err)
+		h.respError(w, coreHelper.ErrorParse, coreHelper.KeyErrorParse+": josn")
 		return
 	}
 	_, err = w.Write(buf)
 	if err != nil {
-		logger.Log.Warningf(corehelper.KeyErrorWrite+": response: %v", err)
-		h.respError(w, corehelper.ErrorWrite, corehelper.KeyErrorWrite+": response")
+		logger.Log.Warningf(coreHelper.KeyErrorWrite+": response: %v", err)
+		h.respError(w, coreHelper.ErrorWrite, coreHelper.KeyErrorWrite+": response")
 		return
 	}
 }
 
-func (h *handler) respError(w http.ResponseWriter, code corehelper.ErrCode, msg string) {
+func (h *handler) respError(w http.ResponseWriter, code coreHelper.ErrCode, msg string) {
 	w.Header().Set("Content-Type", "application/json")
-	resp := &corehelper.ResponseModel{
+	resp := &coreHelper.ResponseModel{
 		Success: false,
-		Result: &corehelper.ResponseError{
+		Result: &coreHelper.ResponseError{
 			Code: code,
 			Msg:  msg,
 		},
@@ -58,6 +60,6 @@ func (h *handler) respError(w http.ResponseWriter, code corehelper.ErrCode, msg 
 	buf, _ := json.Marshal(resp)
 	_, err := w.Write(buf)
 	if err != nil {
-		logger.Log.Warningf(corehelper.KeyErrorWrite+": response: %v", err)
+		logger.Log.Warningf(coreHelper.KeyErrorWrite+": response: %v", err)
 	}
 }

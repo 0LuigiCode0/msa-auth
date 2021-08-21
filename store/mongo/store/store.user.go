@@ -1,9 +1,10 @@
 package store
 
 import (
-	"x-msa-auth/helper"
-	"x-msa-auth/store/mongo/model"
-	corehelper "x-msa-core/helper"
+	coreHelper "github.com/0LuigiCode0/msa-core/helper"
+
+	"github.com/0LuigiCode0/msa-auth/helper"
+	"github.com/0LuigiCode0/msa-auth/store/mongo/model"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -26,7 +27,7 @@ func InitUserStore(db *mongo.Database) UserStore {
 
 func (s *userStore) SelectByID(id primitive.ObjectID) (*model.UserModel, error) {
 	user := &model.UserModel{}
-	err := s.db.Collection(string(helper.CollUsers)).FindOne(corehelper.Ctx, primitive.M{
+	err := s.db.Collection(string(helper.CollUsers)).FindOne(coreHelper.Ctx, primitive.M{
 		"_id": id,
 	}).Decode(user)
 	return user, err
@@ -34,7 +35,7 @@ func (s *userStore) SelectByID(id primitive.ObjectID) (*model.UserModel, error) 
 
 func (s *userStore) SelectByLogin(login string) (*model.UserModel, error) {
 	user := &model.UserModel{}
-	err := s.db.Collection(string(helper.CollUsers)).FindOne(corehelper.Ctx, primitive.M{
+	err := s.db.Collection(string(helper.CollUsers)).FindOne(coreHelper.Ctx, primitive.M{
 		"login": login,
 	}).Decode(user)
 	return user, err

@@ -2,10 +2,11 @@ package hub_helper
 
 import (
 	"net/http"
-	"x-msa-auth/core/database"
-	"x-msa-auth/handlers/grpc_handler/grpc_helper"
-	"x-msa-auth/handlers/roots_handler/roots_helper"
-	"x-msa-auth/helper"
+
+	"github.com/0LuigiCode0/msa-auth/core/database"
+	"github.com/0LuigiCode0/msa-auth/handlers/grpc_handler/grpc_helper"
+	"github.com/0LuigiCode0/msa-auth/handlers/roots_handler/roots_helper"
+	"github.com/0LuigiCode0/msa-auth/helper"
 
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson/primitive"

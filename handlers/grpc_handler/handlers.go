@@ -2,13 +2,14 @@ package grpc_handler
 
 import (
 	"fmt"
+	"github.com/0LuigiCode0/msa-core/grpc/msa_observer"
+	coreHelper "github.com/0LuigiCode0/msa-core/helper"
+	"github.com/0LuigiCode0/msa-core/service/server"
 	"os"
-	"x-msa-auth/handlers/grpc_handler/grpc_helper"
-	"x-msa-auth/helper"
-	"x-msa-auth/hub/hub_helper"
-	"x-msa-core/grpc/msa_observer"
-	corehelper "x-msa-core/helper"
-	"x-msa-core/service/server"
+
+	"github.com/0LuigiCode0/msa-auth/handlers/grpc_handler/grpc_helper"
+	"github.com/0LuigiCode0/msa-auth/helper"
+	"github.com/0LuigiCode0/msa-auth/hub/hub_helper"
 
 	"github.com/0LuigiCode0/logger"
 )
@@ -27,7 +28,7 @@ func InitHandler(hub hub_helper.HelperForHandler, conf *helper.HandlerConfig) (H
 
 	h.SetCall(h.call)
 
-	corehelper.Wg.Add(1)
+	coreHelper.Wg.Add(1)
 	go h.start()
 
 	if err = h.initDependents(); err != nil {
@@ -40,29 +41,29 @@ func InitHandler(hub hub_helper.HelperForHandler, conf *helper.HandlerConfig) (H
 }
 
 func (h *handler) start() {
-	defer corehelper.Wg.Done()
+	defer coreHelper.Wg.Done()
 
 	if err := h.Start(); err != nil {
 		logger.Log.Errorf("canot start gserver %v: %v", h.GetAddr(), err)
-		corehelper.C <- os.Interrupt
+		coreHelper.C <- os.Interrupt
 		return
 	}
 }
 
 func (h *handler) initDependents() error {
 	for _, v := range h.Config().Observers {
-		corehelper.Wg.Add(1)
+		coreHelper.Wg.Add(1)
 		go h.addObserver(v.Key, fmt.Sprintf("%v:%v", v.Host, v.Port))
 	}
 	for _, v := range h.Config().Services {
-		corehelper.Wg.Add(1)
+		coreHelper.Wg.Add(1)
 		go h.AddService(v.Key, fmt.Sprintf("%v:%v", v.Host, v.Port), v.Group)
 	}
 	return nil
 }
 
 func (h *handler) addObserver(key, addr string) {
-	defer corehelper.Wg.Done()
+	defer coreHelper.Wg.Done()
 
 	if err := h.Observers().Add(key, addr); err != nil {
 		logger.Log.Warningf("canot added observer key %v: %v", key, err)
@@ -81,8 +82,8 @@ func (h *handler) addObserver(key, addr string) {
 	fmt.Println(res)
 }
 
-func (h *handler) AddService(key, addr string, group corehelper.GroupsType) {
-	defer corehelper.Wg.Done()
+func (h *handler) AddService(key, addr string, group coreHelper.GroupsType) {
+	defer coreHelper.Wg.Done()
 
 	if err := h.Services().Add(key, addr, group); err != nil {
 		logger.Log.Warningf("canot added service key %v: %v", key, err)
@@ -90,7 +91,7 @@ func (h *handler) AddService(key, addr string, group corehelper.GroupsType) {
 	}
 }
 
-func (h *handler) DeleteService(key string, group corehelper.GroupsType) error {
+func (h *handler) DeleteService(key string, group coreHelper.GroupsType) error {
 	if err := h.Services().Delete(group, key); err != nil {
 		return err
 	}

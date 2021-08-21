@@ -2,10 +2,12 @@ package grpcpublic
 
 import (
 	"net/http"
-	"x-msa-auth/helper"
-	"x-msa-auth/store/mongo/model"
-	"x-msa-core/service/client"
-	"x-msa-core/service/server"
+
+	"github.com/0LuigiCode0/msa-core/service/client"
+	"github.com/0LuigiCode0/msa-core/service/server"
+
+	"github.com/0LuigiCode0/msa-auth/helper"
+	"github.com/0LuigiCode0/msa-auth/store/mongo/model"
 )
 
 type AuthServices interface {

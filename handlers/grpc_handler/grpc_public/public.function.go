@@ -5,11 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"x-msa-auth/helper"
-	"x-msa-auth/store/mongo/model"
-	"x-msa-core/grpc/msa_service"
-	corehelper "x-msa-core/helper"
-	"x-msa-core/service/server"
+
+	"github.com/0LuigiCode0/msa-core/grpc/msa_service"
+	coreHelper "github.com/0LuigiCode0/msa-core/helper"
+	"github.com/0LuigiCode0/msa-core/service/server"
+
+	"github.com/0LuigiCode0/msa-auth/helper"
+	"github.com/0LuigiCode0/msa-auth/store/mongo/model"
 
 	goutill "github.com/0LuigiCode0/go-utill"
 )
@@ -19,7 +21,7 @@ func NewUserServices(service server.ServiceServer) AuthServices {
 }
 
 func (s *authServices) Auth() Auth {
-	if c, err := s.Services().GetFirstByGroup(corehelper.Auth); err != nil {
+	if c, err := s.Services().GetFirstByGroup(coreHelper.Auth); err != nil {
 		return &auth{err: err}
 	} else {
 		return &auth{ServiceClient: c}
@@ -39,7 +41,7 @@ func (u *auth) AuthGuard(r *http.Request, roles ...helper.Role) (*model.UserMode
 	}
 	data, err := json.Marshal(in)
 	if err != nil {
-		return nil, fmt.Errorf("%v json: %v", corehelper.KeyErrorParse, err)
+		return nil, fmt.Errorf("%v json: %v", coreHelper.KeyErrorParse, err)
 	}
 
 	resp, err := u.Call(&msa_service.RequestCall{
@@ -47,11 +49,11 @@ func (u *auth) AuthGuard(r *http.Request, roles ...helper.Role) (*model.UserMode
 		Data:     data,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("%v user: %v", corehelper.KeyErrorNotFound, err)
+		return nil, fmt.Errorf("%v user: %v", coreHelper.KeyErrorNotFound, err)
 	}
 	out := &model.UserModel{}
 	if err := goutill.JsonParse(bytes.NewReader(resp.Result), out); err != nil {
-		return nil, fmt.Errorf("%v json: %v", corehelper.KeyErrorParse, err)
+		return nil, fmt.Errorf("%v json: %v", coreHelper.KeyErrorParse, err)
 	}
 	return out, nil
 }
