@@ -5,12 +5,12 @@ import (
 	"net/http"
 
 	"github.com/0LuigiCode0/msa-auth/core/database"
-	"github.com/0LuigiCode0/msa-auth/handlers/grpc_handler"
-	"github.com/0LuigiCode0/msa-auth/handlers/grpc_handler/grpc_helper"
-	"github.com/0LuigiCode0/msa-auth/handlers/roots_handler"
-	"github.com/0LuigiCode0/msa-auth/handlers/roots_handler/roots_helper"
+	"github.com/0LuigiCode0/msa-auth/handlers/grpcHandler"
+	"github.com/0LuigiCode0/msa-auth/handlers/grpcHandler/grpcHelper"
+	"github.com/0LuigiCode0/msa-auth/handlers/rootsHandler"
+	"github.com/0LuigiCode0/msa-auth/handlers/rootsHandler/rootsHelper"
 	"github.com/0LuigiCode0/msa-auth/helper"
-	"github.com/0LuigiCode0/msa-auth/hub/hub_helper"
+	"github.com/0LuigiCode0/msa-auth/hub/hubHelper"
 
 	"github.com/0LuigiCode0/logger"
 	"github.com/gorilla/mux"
@@ -29,13 +29,13 @@ type Hub interface {
 
 type hub struct {
 	database.DB
-	helper  hub_helper.Helper
+	helper  hubHelper.Helper
 	router  *mux.Router
 	handler http.Handler
 	config  *helper.Config
 
-	_roots roots_helper.Handler
-	_grpc  grpc_helper.Handler
+	_roots rootsHelper.Handler
+	_grpc  grpcHelper.Handler
 }
 
 func InitHub(db database.DB, conf *helper.Config) (H Hub, err error) {
@@ -47,7 +47,7 @@ func InitHub(db database.DB, conf *helper.Config) (H Hub, err error) {
 	H = hh
 	hh.SetHandler(hh.router)
 
-	hh.helper = hub_helper.InitHelper(hh)
+	hh.helper = hubHelper.InitHelper(hh)
 
 	if err = hh.intiDefault(); err != nil {
 		logger.Log.Warningf("initializing default is failed: %v", err)
@@ -57,7 +57,7 @@ func InitHub(db database.DB, conf *helper.Config) (H Hub, err error) {
 	logger.Log.Service("initializing default")
 
 	if v, ok := conf.Handlers[_roots]; ok {
-		hh._roots, err = roots_handler.InitHandler(hh, v)
+		hh._roots, err = rootsHandler.InitHandler(hh, v)
 		if err != nil {
 			err = fmt.Errorf("handler %q not initializing: %v", _roots, err)
 			return
@@ -69,7 +69,7 @@ func InitHub(db database.DB, conf *helper.Config) (H Hub, err error) {
 	}
 
 	if v, ok := conf.Handlers[_grpc]; ok {
-		hh._grpc, err = grpc_handler.InitHandler(hh, v)
+		hh._grpc, err = grpcHandler.InitHandler(hh, v)
 		if err != nil {
 			err = fmt.Errorf("handler %q not initializing: %v", _grpc, err)
 			return
@@ -84,13 +84,13 @@ func InitHub(db database.DB, conf *helper.Config) (H Hub, err error) {
 	return
 }
 
-func (h *hub) Config() *helper.Config      { return h.config }
-func (h *hub) Helper() hub_helper.Helper   { return h.helper }
-func (h *hub) Router() *mux.Router         { return h.router }
-func (h *hub) GetHandler() http.Handler    { return h.handler }
-func (h *hub) SetHandler(hh http.Handler)  { h.handler = hh }
-func (h *hub) Roots() roots_helper.Handler { return h._roots }
-func (h *hub) Grps() grpc_helper.MSA       { return h._grpc }
+func (h *hub) Config() *helper.Config     { return h.config }
+func (h *hub) Helper() hubHelper.Helper   { return h.helper }
+func (h *hub) Router() *mux.Router        { return h.router }
+func (h *hub) GetHandler() http.Handler   { return h.handler }
+func (h *hub) SetHandler(hh http.Handler) { h.handler = hh }
+func (h *hub) Roots() rootsHelper.Handler { return h._roots }
+func (h *hub) Grps() grpcHelper.MSA       { return h._grpc }
 func (h *hub) Close() {
 	if h._grpc != nil {
 		h._grpc.Close()

@@ -1,4 +1,4 @@
-package grpc_handler
+package grpcHandler
 
 import (
 	"bytes"
@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/0LuigiCode0/msa-core/grpc/msa_service"
+	"github.com/0LuigiCode0/msa-core/grpc/msaService"
 
 	"github.com/0LuigiCode0/msa-auth/helper"
 	"github.com/0LuigiCode0/msa-auth/store/mongo/model"
@@ -19,7 +19,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func (h *handler) call(ctx context.Context, req *msa_service.RequestCall) (*msa_service.ResponseCall, error) {
+func (h *handler) call(ctx context.Context, req *msaService.RequestCall) (*msaService.ResponseCall, error) {
 	var out interface{}
 	var err error
 
@@ -39,10 +39,10 @@ func (h *handler) call(ctx context.Context, req *msa_service.RequestCall) (*msa_
 		logger.Log.Warningf("%v json: %v", coreHelper.KeyErrorParse, err)
 		return nil, err
 	}
-	return &msa_service.ResponseCall{Result: data}, nil
+	return &msaService.ResponseCall{Result: data}, nil
 }
 
-func (h *handler) authGuard(req *msa_service.RequestCall) (*model.UserModel, error) {
+func (h *handler) authGuard(req *msaService.RequestCall) (*model.UserModel, error) {
 	in := &model.RequsetAuthGRPC{}
 	if err := goutill.JsonParse(bytes.NewReader(req.Data), in); err != nil {
 		logger.Log.Warningf("%v json: %v", coreHelper.KeyErrorParse, err)

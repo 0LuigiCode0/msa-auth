@@ -1,4 +1,4 @@
-package hub_helper
+package hubHelper
 
 import (
 	"fmt"

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/0LuigiCode0/msa-core/grpc/msa_service"
+	"github.com/0LuigiCode0/msa-core/grpc/msaService"
 	coreHelper "github.com/0LuigiCode0/msa-core/helper"
 	"github.com/0LuigiCode0/msa-core/service/server"
 
@@ -44,7 +44,7 @@ func (u *auth) AuthGuard(r *http.Request, roles ...helper.Role) (*model.UserMode
 		return nil, fmt.Errorf("%v json: %v", coreHelper.KeyErrorParse, err)
 	}
 
-	resp, err := u.Call(&msa_service.RequestCall{
+	resp, err := u.Call(&msaService.RequestCall{
 		FuncName: helper.AuthGuard,
 		Data:     data,
 	})

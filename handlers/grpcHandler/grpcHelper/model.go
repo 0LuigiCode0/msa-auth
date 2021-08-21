@@ -1,4 +1,4 @@
-package grpc_helper
+package grpcHelper
 
 import (
 	coreHelper "github.com/0LuigiCode0/msa-core/helper"

@@ -1,8 +1,9 @@
-package roots_handler
+package rootsHandler
 
 import (
 	"net/http"
 
+	"github.com/0LuigiCode0/msa-auth/helper"
 	coreHelper "github.com/0LuigiCode0/msa-core/helper"
 
 	"github.com/0LuigiCode0/logger"
@@ -21,6 +22,8 @@ func (h *handler) auth(w http.ResponseWriter, r *http.Request) {
 		h.respError(w, coreHelper.ErrorSave, coreHelper.KeyErrorSave)
 		return
 	}
+
+	pwd = coreHelper.Hash(pwd, helper.Secret)
 
 	if user.Password != pwd {
 		logger.Log.Warningf("%v password wrong", coreHelper.KeyErorrAccessDenied)

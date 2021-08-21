@@ -1,4 +1,4 @@
-package roots_handler
+package rootsHandler
 
 import (
 	"encoding/json"
@@ -6,18 +6,18 @@ import (
 
 	coreHelper "github.com/0LuigiCode0/msa-core/helper"
 
-	"github.com/0LuigiCode0/msa-auth/handlers/roots_handler/roots_helper"
+	"github.com/0LuigiCode0/msa-auth/handlers/rootsHandler/rootsHelper"
 	"github.com/0LuigiCode0/msa-auth/helper"
-	"github.com/0LuigiCode0/msa-auth/hub/hub_helper"
+	"github.com/0LuigiCode0/msa-auth/hub/hubHelper"
 
 	"github.com/0LuigiCode0/logger"
 )
 
 type handler struct {
-	hub_helper.HelperForHandler
+	hubHelper.HelperForHandler
 }
 
-func InitHandler(hub hub_helper.HelperForHandler, conf *helper.HandlerConfig) (H roots_helper.Handler, err error) {
+func InitHandler(hub hubHelper.HelperForHandler, conf *helper.HandlerConfig) (H rootsHelper.Handler, err error) {
 	h := &handler{HelperForHandler: hub}
 	H = h
 

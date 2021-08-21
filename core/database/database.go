@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+
 	coreHelper "github.com/0LuigiCode0/msa-core/helper"
 
 	"github.com/0LuigiCode0/msa-auth/helper"

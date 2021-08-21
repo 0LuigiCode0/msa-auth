@@ -1,11 +1,11 @@
-package hub_helper
+package hubHelper
 
 import (
 	"net/http"
 
 	"github.com/0LuigiCode0/msa-auth/core/database"
-	"github.com/0LuigiCode0/msa-auth/handlers/grpc_handler/grpc_helper"
-	"github.com/0LuigiCode0/msa-auth/handlers/roots_handler/roots_helper"
+	"github.com/0LuigiCode0/msa-auth/handlers/grpcHandler/grpcHelper"
+	"github.com/0LuigiCode0/msa-auth/handlers/rootsHandler/rootsHelper"
 	"github.com/0LuigiCode0/msa-auth/helper"
 
 	"github.com/gorilla/mux"
@@ -22,13 +22,13 @@ type HelperForHandler interface {
 	Config() *helper.Config
 	Router() *mux.Router
 	SetHandler(hh http.Handler)
-	Grps() grpc_helper.MSA
+	Grps() grpcHelper.MSA
 }
 
 type HandlerForHelper interface {
 	database.DBForHandler
-	Roots() roots_helper.Handler
-	Grps() grpc_helper.MSA
+	Roots() rootsHelper.Handler
+	Grps() grpcHelper.MSA
 	Config() *helper.Config
 }
 

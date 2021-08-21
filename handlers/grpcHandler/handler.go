@@ -1,25 +1,26 @@
-package grpc_handler
+package grpcHandler
 
 import (
 	"fmt"
-	"github.com/0LuigiCode0/msa-core/grpc/msa_observer"
-	coreHelper "github.com/0LuigiCode0/msa-core/helper"
-	"github.com/0LuigiCode0/msa-core/service/server"
 	"os"
 
-	"github.com/0LuigiCode0/msa-auth/handlers/grpc_handler/grpc_helper"
+	"github.com/0LuigiCode0/msa-core/grpc/msaObserver"
+	coreHelper "github.com/0LuigiCode0/msa-core/helper"
+	"github.com/0LuigiCode0/msa-core/service/server"
+
+	"github.com/0LuigiCode0/msa-auth/handlers/grpcHandler/grpcHelper"
 	"github.com/0LuigiCode0/msa-auth/helper"
-	"github.com/0LuigiCode0/msa-auth/hub/hub_helper"
+	"github.com/0LuigiCode0/msa-auth/hub/hubHelper"
 
 	"github.com/0LuigiCode0/logger"
 )
 
 type handler struct {
-	hub_helper.HelperForHandler
+	hubHelper.HelperForHandler
 	server.ServiceServer
 }
 
-func InitHandler(hub hub_helper.HelperForHandler, conf *helper.HandlerConfig) (H grpc_helper.Handler, err error) {
+func InitHandler(hub hubHelper.HelperForHandler, conf *helper.HandlerConfig) (H grpcHelper.Handler, err error) {
 	h := &handler{
 		HelperForHandler: hub,
 		ServiceServer:    server.NewServiceServer(conf.Key, fmt.Sprintf("%v:%v", conf.Host, conf.Port)),
@@ -74,7 +75,7 @@ func (h *handler) addObserver(key, addr string) {
 		logger.Log.Warningf("canot find observer key %v: %v", key, err)
 		return
 	}
-	res, err := observer.PushFirst(&msa_observer.RequestPushFirst{})
+	res, err := observer.PushFirst(&msaObserver.RequestPushFirst{})
 	if err != nil {
 		logger.Log.Warningf("canot request in observer %v: %v", key, err)
 		return
